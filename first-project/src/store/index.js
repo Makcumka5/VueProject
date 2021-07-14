@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: {
         paymentsList: [],
         category: [],
+        data: "",
     },
     mutations: {
         setPaymentsListData(state, payload) {
@@ -41,32 +42,34 @@ export default new Vuex.Store({
         someAction({ commit }, res) {
             commit("setPaymentsListData", res);
         },
+        addData({ commit }, payload) {
+            console.log(commit, payload);
+        },
         fetchCategoryList({ commit }) {
             return new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve([
-                        " Food ",
-                        " Transport ",
-                        " Education ",
-                        " Internet ",
-                        " GB ",
-                        " Life ",
-                        " Sport ",
-                    ]);
-                }, 1000);
+                resolve([
+                    "Food",
+                    "Transport",
+                    "Education",
+                    "Internet",
+                    "GB",
+                    "Life",
+                    "Sport",
+                ]);
             }).then((res) => commit("addCategory", res));
         },
         fetchData({ dispatch }) {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     const items = [];
-                    // for (let i = 1; i < 110; i++) {
-                    //     items.push({
-                    //         date: "01.07.2021",
-                    //         category: "Food",
-                    //         value: i,
-                    //     });
-                    // }
+                    for (let i = 1; i < 5; i++) {
+                        items.push({
+                            date: "01.07.2021",
+                            category: "Food",
+                            value: i,
+                            id: i,
+                        });
+                    }
                     resolve(items);
                 }, 2000);
             }).then((res) => dispatch("someAction", res));

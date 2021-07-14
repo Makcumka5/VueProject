@@ -1,16 +1,9 @@
 <template>
-  <div
-    style="display: flex; 
-    flex-direction: column; 
-    width: 200px; 
-    height: 100px; 
-    margin-bottom: 10px"
-    class="payment-form"
-  >
+  <div class="payment-form">
     <input placeholder="Amout" type="number" v-model.number="value" />
     <!-- <input placeholder="Category" type="text" v-model.trim="category" /> -->
     <select v-model="category">
-      <option v-for="(item, idx) in categoryList" :value="item" :key="idx">
+      <option v-for="(item, idx) in categories" :value="item" :key="idx">
         {{ item }}
       </option>
     </select>
@@ -26,7 +19,7 @@ export default {
   data() {
     return {
       value: 0,
-      category: "",
+      category: "Food",
       date: "",
     };
   },
@@ -45,17 +38,35 @@ export default {
         category,
         value,
       };
-      //   console.log(data);
+      console.log(data);
+      if (this.routeName === "AddPaymentFromLink") {
+        this.$store.commit("addDataToPaymentList", data);
+        this.$router.push({
+          name: "dashboard",
+        });
+      }
       this.$emit("addNewPayment", data);
     },
   },
+  computed: {
+    categories() {
+      if (this.categoryList?.length) {
+        return this.categoryList;
+      }
+      return this.$store.getters.getCategoryList;
+    },
+    routeName() {
+      return this.$route.name;
+    },
+  },
+  created() {
+    const { query, params } = this.$route;
+    if (params?.category) {
+      this.category = params.category;
+    }
+    if (query?.value) {
+      this.value = Number(query.value);
+    }
+  },
 };
 </script>
-
-<style lang="sass" scoped module>
-.payment-form
-    display: flex
-    flex-direction: column
-    width: 100px
-    height: 20px
-</style>

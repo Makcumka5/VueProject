@@ -3,104 +3,119 @@
     <div :class="[$style.header]">
       <h1>My Personal Cost</h1>
     </div>
-    <button :class="[$style.toggle]" @click="toggleElement">
-      ADD NEW COST +
-    </button>
-    <div :class="[$style.wrapper]" v-if="isVisible">
-      <AddPaymentForm
-        @addNewPayment="addNewPaymentData"
-        :category-list="categoryList"
-      />
-      <br />
-      <div>Total Sum = {{ getFPV }}</div>
-      <PaymentsDisplay :items="paymentList" />
-      <PaymentsDisplay :items="categoryList" />
+    <div class="menu">
+      <!-- https://router.vuejs.org/ru/api/-->
+      <!-- <router-link to="/dashboard">
+        Dashboard /
+      </router-link> -->
+
+      <!-- <router-link to="/calculator">
+        Calculator /
+      </router-link> -->
+      <!-- <a href="#" @click="goToPage('calculator')">Calculator</a> /
+      <a href="#" @click="goToPage('dashboard')">Dashboard</a> /
+      <a href="#" @click="goToPage('about')">About</a> -->
+      <!-- <a href="dashboard">Dashboard</a> / -->
+      <a href="Dashboard">Dashboard</a> / <a href="Calculator">Calculator</a> /
+      <a href="page404">404</a> /
+      <a href="about">about</a>
     </div>
+    <br />
+    <div class="content">
+      <router-view />
+      <!-- <Page404 v-if="pageName==='page404'"/>
+      <PageAbout v-if="pageName==='about'"/>
+      <PageDashboard v-if="pageName==='dashboard'"/> -->
+    </div>
+    <div class="wrapper"></div>
+    <transition name="fade">
+      <ModalWindow v-if="modalWindowName" :settings="settings" />
+    </transition>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapGetters, mapActions } from "vuex";
-import PaymentsDisplay from "./components/PaymentsDisplay.vue";
-import AddPaymentForm from "./components/AddPaymentForm.vue";
+// import PageAbout from './page/PageAbout.vue'
+// import PageDashboard from './page/PageDashboard.vue'
+// import Page404 from './page/Page404.vue'
 export default {
   name: "App",
   components: {
-    PaymentsDisplay,
-    AddPaymentForm,
+    ModalWindow: () => import("./components/ModalWindow.vue"),
+    // Page404,
+    // PageAbout,
+    // PageDashboard
   },
-  data: () => {
+  data() {
     return {
-      isVisible: false,
+      page: 1,
+      count: 10,
+      pageName: "",
+      modalWindowName: "",
+      settings: {},
     };
   },
   methods: {
-    ...mapMutations(["setPaymentsListData", "addDataToPaymentList"]),
-    ...mapActions({
-      fetchListData: "fetchData",
-    }),
-    addNewPaymentData(value) {
-      this.addDataToPaymentList(value);
-    },
-    fetchData() {
-      return [
-        {
-          date: "12.03.2020",
-          category: "Car",
-          value: 180,
+    goToPage(page) {
+      this.$router.push({
+        name: page,
+        params: {
+          id: "123",
         },
-        {
-          date: "12.04.2020",
-          category: "Internet",
-          value: 100,
-        },
-        {
-          date: "28.08.2019",
-          category: "Food",
-          value: 300,
-        },
-        {
-          date: "11.03.2018",
-          category: "Sport",
-          value: 1400,
-        },
-      ];
+      });
     },
-    toggleElement() {
-      this.isVisible = !this.isVisible;
+    onShown(settings) {
+      this.modalWindowName = settings.name;
+      this.settings = settings.settings;
     },
-  },
-  computed: {
-    ...mapGetters(["getFullPaymentValue"]),
-    getFPV() {
-      return this.getFullPaymentValue;
+    onHide() {
+      this.modalWindowName = "";
+      this.settings = {};
     },
-    paymentList() {
-      return this.$store.getters.getPaymentList;
-    },
-    categoryList() {
-      return this.$store.getters.getCategoryList;
-    },
+    // setPage(){
+    //   this.pageName = location.pathname.slice(1)
+    // }
   },
   created() {
-    // this.paymentsList = this.fetchData();
-    // this.$store.commit("setPaymentsListData", this.fetchData());
-    if (!this.fetchListData.length) {
-      this.fetchListData();
-    }
+    // this.paymentsList = this.fetchData()
+    // this.$store.commit('setPaymentsListData', this.fetchData())
+    // if(!this.fetchListData.length) {
+    //   this.fetchListData()
+    // }
     this.$store.dispatch("fetchCategoryList");
+  },
+  mounted() {
+    this.$modal.EventBus.$on("show", this.onShown);
+    this.$modal.EventBus.$on("hide", this.onHide);
+    // this.setPage()
+    // const links = document.querySelectorAll('a')
+    // links.forEach(link=>{
+    //   link.addEventListener('click', event => {
+    //     event.preventDefault()
+    //     history.pushState({}, '', link.href)
+    //     this.setPage()
+    //   })
+    // })
+    // window.addEventListener('popstate', ()=>{
+    //   this.setPage()
+    //   console.log('popstate')
+    // })
   },
 };
 </script>
 
-<style lang="sass" scoped module>
-.header
-  font-size: 20px
-.wrapper
-  margin-top: 10px
-.toggle
-  background-color: #5cab9a
-  color: white
-  border: none
-  font-size: 20px
+<style lang="scss" scoped module>
+.header {
+  font-size: 20px;
+}
+</style>
+<style lang="scss">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 </style>
