@@ -1,18 +1,18 @@
 <template>
-  <!-- <div class="list">
-    <div class="displayList">#</div>
-    <div class="displayList">date</div>
-    <div class="displayList">category</div>
-    <div class="displayList">value</div>
-  </div> -->
-
-  <div class="payments-list">
-    <div class="list">
-      <div class="item" v-for="(item, idx) in items" :key="idx">
-        {{ idx + 1 }} - {{ item }}
-      </div>
-    </div>
-  </div>
+  <v-container>
+    <v-row>
+      <v-col cols="1">#</v-col>
+      <v-col cols="4">Date</v-col>
+      <v-col cols="5">Category</v-col>
+      <v-col cols="2">Value</v-col>
+    </v-row>
+    <v-row v-for="(item, idx) in items" :key="idx">
+      <v-col cols="1">{{ idx }}</v-col>
+      <v-col cols="4">{{ item.date }}</v-col>
+      <v-col cols="5">{{ item.category }}</v-col>
+      <v-col cols="2">{{ item.value }}</v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -24,16 +24,5 @@ export default {
       default: () => [],
     },
   },
-  methods: {},
 };
 </script>
-
-<style lang="sass" scoped>
-
-.list
-    display: flex
-.displayList
-    font-size: 20px
-    padding: 10px
-    width: 90px
-</style>

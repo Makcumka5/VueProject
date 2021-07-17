@@ -36,15 +36,15 @@ const router = new Router({
                     "../components/AddPaymentForm.vue"
                 ),
         },
-        {
-            path: "/calculator",
-            name: "calculator",
-            component: () =>
-                import (
-                    /* webpackChunkName: "calculator" */
-                    "../components/Calculator.vue"
-                ),
-        },
+        // {
+        //     path: "/calculator",
+        //     name: "calculator",
+        //     component: () =>
+        //         import (
+        //             /* webpackChunkName: "calculator" */
+        //             "../components/Calculator.vue"
+        //         ),
+        // },
         // {
         //     path: "*",
         //     name: "NotFound",
